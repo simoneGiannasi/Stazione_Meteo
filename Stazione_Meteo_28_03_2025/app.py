@@ -175,6 +175,10 @@ def index():
 def archivio_dati():
     return render_template('archivio-dati.html')
 
+@app.route('/progetto')
+def progetto():
+    return render_template('progetto.html')
+
 @app.route('/api/grafici')
 def grafici_api():
     try:

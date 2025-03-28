@@ -117,31 +117,6 @@ def calcola_raffica_vento(db, collezione):
     
     return raffica, orario_raffica
 
-# from datetime import datetime, time
-
-# def temperature_giornaliere(db, collezione):
-#     # Ottieni la data di oggi
-#     oggi = datetime.now().date()
-#     inizio_giorno = datetime.combine(oggi, time.min)  # Inizio della giornata (00:00:00)
-#     fine_giorno = datetime.combine(oggi, time.max)    # Fine della giornata (23:59:59)
-    
-#     # Query per filtrare i dati meteo per oggi
-#     query = {
-#         'date_hour': {
-#             '$gte': inizio_giorno,
-#             '$lte': fine_giorno
-#         }
-#     }
-    
-#     # Recupera i dati delle temperature
-#     collection = db[collezione]
-#     risultati = list(collection.find(query, {
-#         'outside_temp': 1,
-#         'date_hour': 1,
-#         '_id': 0
-#     }).sort('date_hour', 1))  # Ordina per data e ora in ordine crescente
-    
-#     return risultati
 
 def temperature_giornaliere(db, collection_name):
     # Fetch last 24 records sorted by timestamp

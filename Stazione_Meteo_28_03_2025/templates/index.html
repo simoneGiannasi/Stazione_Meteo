@@ -54,10 +54,10 @@
                         <a class="nav-link" href = "./dati_live">Dati Live</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Il Progetto</a>
+                        <a class="nav-link" href="./progetto">Il Progetto</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">La Scuola</a>
+                        <a class="nav-link" href="https://www.itiscuneo.edu.it/">La Scuola</a>
                     </li>
                 </ul>
             </div>
@@ -329,11 +329,11 @@
                     <div class="card-body">
                         <div class="d-flex flex-column h-100">
                             <div class="mb-3 text-center">
-                                <img src="/api/placeholder/400/200" alt="ITIS Mario Delpozzo" class="img-fluid rounded">
+                                <img src="{{ url_for('static', filename='images/logo_itis.png') }}" alt="ITIS Mario Delpozzo" class="img-fluid rounded">
                             </div>
                             <p>L'ITIS Mario Delpozzo di Cuneo è un istituto tecnico all'avanguardia che promuove l'innovazione tecnologica e la formazione scientifica. La nostra stazione meteo è un progetto didattico che coinvolge gli studenti dell'indirizzo di elettronica ed informatica.</p>
                             <div class="mt-auto">
-                                <a href="#" class="btn btn-outline-primary">Visita il sito della scuola</a>
+                                <a href="https://www.itiscuneo.edu.it/" class="btn btn-outline-primary">Visita il sito della scuola</a>
                             </div>
                         </div>
                     </div>
@@ -380,10 +380,10 @@
                     <h5>Collegamenti Rapidi</h5>
                     <ul class="list-inline">
                         <li class="list-inline-item"><a href="./" class="text-white">Home</a></li>
-                        <li class="list-inline-item"><a href="#" class="text-white">Archivio Dati</a></li>
-                        <li class="list-inline-item"><a href="#" class="text-white">Il Progetto</a></li>
+                        <li class="list-inline-item"><a href="./archivio-dati" class="text-white">Archivio Dati</a></li>
+                        <li class="list-inline-item"><a href="./dati_live" class="text-white">Dati-Live</a></li>
+                        <li class="list-inline-item"><a href="./progetto" class="text-white">Il Progetto</a></li>
                         <li class="list-inline-item"><a href="https://www.itiscuneo.edu.it/" class="text-white">La Scuola</a></li>
-                        <li class="list-inline-item"><a href="#" class="text-white">Privacy</a></li>
                     </ul>
                     <div class="mt-3">
                         <a href="https://www.facebook.com/ITISdelpozzo/" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
@@ -402,6 +402,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
+        // CLAUDE GENERARED
         function fetchWeatherData() {
     fetch('/api/grafici')
         .then(response => response.json())

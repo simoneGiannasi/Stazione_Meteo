@@ -1,0 +1,5 @@
+1. Pulire db
+2. Machine learning
+3. implementare app e ml (thread)
+4. mettere tutto su raspberry
+5. fare progetto.html

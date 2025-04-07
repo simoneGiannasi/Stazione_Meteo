@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stazione Meteo ITIS Mario Delpozzo - Cuneo</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .weather-icon {
+            font-size: 3.5rem;
+        }
+        .temp-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .custom-card {
+            transition: transform 0.3s;
+        }
+        .custom-card:hover {
+            transform: translateY(-5px);
+        }
+        .bg-school {
+            background-color: #0d6efd;
+        }
+        /* Soluzione 1: Aggiungere questo stile per evitare l'a capo */
+        .no-wrap {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-school">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fas fa-cloud-sun me-2"></i>
+                <span>Stazione Meteo ITIS Mario Delpozzo</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="./">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./archivio-dati">Archivio Dati</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href = "./dati_live">Dati Live</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./progetto">Il Progetto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.itiscuneo.edu.it/">La Scuola</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header con info stazione -->
+    <div class="bg-light py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">Stazione Meteo ITIS Mario Delpozzo</h1>
+                    <p class="lead mb-0">Progetto didattico di monitoraggio meteorologico</p>
+                    <p>Cuneo, Piemonte - Altitudine: 534 m s.l.m.</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="d-flex flex-column align-items-md-end">
+                        <div class="mb-1">Aggiornato: <span id="current-date" class="fw-bold">{{data[0][0]}} {{data[0][1]}}</data></span></div>
+                        <div>
+                            <span class="badge bg-{{data[2][0]}}">Stazione {{data[2][1]}}</span>
+                            <a href="/dati_live" class="btn btn-sm btn-outline-primary ms-2">Dati Live</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dati attuali -->
+    <div class="container my-4">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h5 mb-0"><i class="fas fa-calendar-day me-2"></i>Condizioni Meteo Attuali</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center border-end">
+                        <div class="weather-icon mb-2">☀️</div>
+                        <div class="h4">Soleggiato</div>
+                        <div class="temp-display">{{data[1]["outside_temp"]}}°C</div>
+                        <div id="temp">Temperatura percepita: {{data[1]["temp_perc"]}}°C</div>
+
+                          
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row row-cols-2 row-cols-lg-5 g-3 text-center">
+                            <div class="col">
+                                <div class="card h-100 border-0">
+                                    <div class="card-body">
+                                        <i class="fas fa-temperature-high text-danger mb-2" style="font-size: 1.5rem;"></i>
+                                        <h5 class="card-title">Temperatura</h5>
+                                        <p class="card-text mb-0">Attuale: {{data[1]["outside_temp"]}}°C</p>
+                                        <p class="card-text mb-0">Min: {{data[1]["min_temp"]}}°C</p>
+                                        <p class="card-text">Max: {{data[1]["max_temp"]}}°C</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 border-0">
+                                    <div class="card-body">
+                                        <i class="fas fa-wind text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                        <h5 class="card-title">Vento</h5>
+                                        <p class="card-text mb-0">{{data[1]["wind_speed"]}} Km/h</p>
+                                        <p class="card-text mb-0">Direzione: {{data[1]["wind_direction"]}}</p>
+                                        <p class="card-text">Raffica: {{data[1]["raffica"]}} Km/h alle ore: {{data[1]["orario_raffica"]}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 border-0">
+                                    <div class="card-body">
+                                        <i class="fas fa-tint text-info mb-2" style="font-size: 1.5rem;"></i>
+                                        <h5 class="card-title">Umidità</h5>
+                                        <p class="card-text mb-0">{{data[1]["outside_humidity"]}}%</p>
+                                        <p class="card-text mb-0">Punto di rugiada:</p>
+                                        <p class="card-text">{{data[1]["punto_di_rugiada"]}}°C</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 border-0">
+                                    <div class="card-body">
+                                        <i class="fas fa-tachometer-alt text-success mb-2" style="font-size: 1.5rem;"></i>
+                                        <h5 class="card-title">Pressione</h5>
+                                        <p class="card-text mb-0">{{data[1]["barometer"]}} hPa</p>
+                                        <p class="card-text mb-0">Tendenza:</p>
+                                        <p class="card-text">{{data[1]["bar_trend"]}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 border-0">
+                                    <div class="card-body">
+                                        <i class="fas fa-cloud-showers-heavy text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                        <!-- Soluzione 1: Aggiungere la classe no-wrap -->
+                                        <h5 class="card-title no-wrap">Precipitazioni</h5>
+                                        <p class="card-text mb-0">{{data[1]["rain_rate"]}} mm/h
+                                            </p>
+                                        <p class="card-text mb-0">Oggi: {{data[1]["day_rain"]}} mm</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Previsioni 3 giorni -->
+    <div class="container my-4">
+        <h2 class="h4 mb-3"><i class="fas fa-calendar-week me-2"></i>Previsioni Meteo - Prossimi Giorni</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+
+            {%if domani %}
+            <!-- Giorno 1 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm custom-card">
+                    <div class="card-header text-center bg-primary text-white">
+                        <h3 class="h5 mb-0">Domani</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="weather-icon">☀️</div>
+                        <!--<div class="h4">Soleggiato</div>-->
+                        <div class="temp-display mb-2"> {{domani["temperatura"]}} °C</div>
+                        <!--<div class="mb-3">
+                            <span class="badge bg-primary me-2">Min: 7.2°C</span>
+                            <span class="badge bg-danger">Max: 15.8°C</span>
+                        </div>-->
+                        <div class="row row-cols-2 g-2 text-center mb-2">
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-tint text-info"></i> {{domani["umidità"]}} %
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-wind text-primary"></i> {{domani["velocità media"]}} Km/h
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-tachometer-alt text-success"></i> {{domani["pressione"]}} hPa
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-cloud-rain text-secondary"></i> {{domani["precipitazione"]}} mm
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {%endif%}
+            {%if dopodomani %}
+            <!-- Giorno 2 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm custom-card">
+                    <div class="card-header text-center bg-primary text-white">
+                        <h3 class="h5 mb-0">Dopodomani</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="weather-icon">⛅</div>
+                        <!--<div class="h4">Parzialmente nuvoloso</div>-->
+                        <div class="temp-display mb-2"> {{dopodomani["temperatura"]}} °C</div>
+                        <!--<div class="mb-3">
+                            <span class="badge bg-primary me-2">Min: 6.5°C</span>
+                            <span class="badge bg-danger">Max: 14.0°C</span>
+                        </div>-->
+                        <div class="row row-cols-2 g-2 text-center mb-2">
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-tint text-info"></i> {{dopodomani["umidità"]}}%
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-wind text-primary"></i> {{dopodomani["velocità media"]}} Km/h
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-tachometer-alt text-success"></i> {{dopodomani["pressione"]}} hPa
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-cloud-rain text-secondary"></i> {{dopodomani["precipitazione"]}} mm
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {%endif%}
+            {%if tregiorni %}
+            <!-- Giorno 3 -->
+            <div class="col">
+                <div class="card h-100 shadow-sm custom-card">
+                    <div class="card-header text-center bg-primary text-white">
+                        <h3 class="h5 mb-0">Tra tre giorni</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="weather-icon">🌧️</div>
+                        <!--<div class="h4">Pioggia leggera</div>-->
+                        <div class="temp-display mb-2"> {{tregiorni["temperatura"]}}°C</div>
+                        <!--<div class="mb-3">
+                            <span class="badge bg-primary me-2">Min: 5.8°C</span>
+                            <span class="badge bg-danger">Max: 12.2°C</span>
+                        </div>-->
+                        <div class="row row-cols-2 g-2 text-center mb-2">
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-tint text-info"></i> {{tregiorni["umidità"]}}%
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-wind text-primary"></i> {{tregiorni["velocità media"]}} km/h
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-tachometer-alt text-success"></i> {{tregiorni["pressione"]}} hPa
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-cloud-rain text-secondary"></i> {{tregiorni["precipitazione"]}} mm
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {%endif%}
+        </div>
+    </div>
+
+
+    <!-- Grafici e dati storici -->
+    <div class="container my-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h5 mb-0"><i class="fas fa-chart-line me-2"></i>Dati Recenti</h2>
+            </div>
+            <div class="card-body">
+                <p class="card-text text-center">Il grafico mostra l'andamento delle temperature nelle ultime ore</p>
+                <div class="bg-light p-3 rounded text-center mb-3">
+                    <!-- Placeholder per un grafico -->
+                    <img src="/api/placeholder/800/300" alt="Grafico delle temperature" class="img-fluid rounded">
+                </div>
+                <div class="text-center">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-primary">Temperatura</button>
+                        <button type="button" class="btn btn-outline-primary">Umidità</button>
+                        <button type="button" class="btn btn-outline-primary">Pressione</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="text-decoration-none">Visualizza tutti i dati storici <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info progetto -->
+    <div class="container my-4">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h5 mb-0"><i class="fas fa-school me-2"></i>Il Nostro Istituto</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column h-100">
+                            <div class="mb-3 text-center">
+                                <img src="{{ url_for('static', filename='images/logo_itis.png') }}" alt="ITIS Mario Delpozzo" class="img-fluid rounded">
+                            </div>
+                            <p>L'ITIS Mario Delpozzo di Cuneo è un istituto tecnico all'avanguardia che promuove l'innovazione tecnologica e la formazione scientifica. La nostra stazione meteo è un progetto didattico che coinvolge gli studenti dell'indirizzo di elettronica ed informatica.</p>
+                            <div class="mt-auto">
+                                <a href="https://www.itiscuneo.edu.it/" class="btn btn-outline-primary">Visita il sito della scuola</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h5 mb-0"><i class="fas fa-flask me-2"></i>Il Progetto Didattico</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column h-100">
+                            <p>La stazione meteo dell'ITIS Mario Delpozzo è stata realizzata dagli studenti del quarto e quinto anno come progetto multidisciplinare che coinvolge:</p>
+                            <ul>
+                                <li>Progettazione e costruzione di sensori meteorologici</li>
+                                <li>Programmazione dei microcontrollori per l'acquisizione dati</li>
+                                <li>Sviluppo del software per l'elaborazione e visualizzazione</li>
+                                <li>Studio dei fenomeni meteorologici locali</li>
+                            </ul>
+                            <p>I dati raccolti vengono utilizzati per studi sul microclima della zona di Cuneo e sono a disposizione della comunità scientifica.</p>
+                            <div class="mt-auto">
+                                <a href="./progetto" class="btn btn-outline-primary">Scopri di più sul progetto</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>ITIS Mario Delpozzo - Stazione Meteo</h5>
+                    <address>
+                        <i class="fas fa-map-marker-alt me-2"></i> Corso Alcide De Gasperi, 30 - 12100 Cuneo<br>
+                        <i class="fas fa-phone me-2"></i> Tel: 0171 634091<br>
+                        <i class="fas fa-envelope me-2"></i> Email: stazionemeteo@itisdelpozzo.edu.it
+                    </address>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Collegamenti Rapidi</h5>
+                    <ul class="list-inline">
+                        <li class="list-inline-item"><a href="./" class="text-white">Home</a></li>
+                        <li class="list-inline-item"><a href="./archivio-dati" class="text-white">Archivio Dati</a></li>
+                        <li class="list-inline-item"><a href="./dati_live" class="text-white">Dati-Live</a></li>
+                        <li class="list-inline-item"><a href="./progetto" class="text-white">Il Progetto</a></li>
+                        <li class="list-inline-item"><a href="https://www.itiscuneo.edu.it/" class="text-white">La Scuola</a></li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="https://www.facebook.com/ITISdelpozzo/" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@itisdelpozzocuneo3140" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="text-center">
+                <small>© 2025 ITIS Mario Delpozzo - Stazione Meteo di Cuneo. Sviluppato dagli studenti dell'indirizzo Robotica.</small>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // CLAUDE GENERARED
+        function fetchWeatherData() {
+    fetch('/api/grafici')
+        .then(response => response.json())
+        .then(data => {
+            // Validate and process data before creating charts
+            if (data && data.length > 0) {
+                console.log("Received data:", data);  // Debug log
+                createWeatherCharts(data);
+            } else {
+                throw new Error("No data received");
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching weather data:', error);
+            const chartContainer = document.querySelector('.bg-light.p-3.rounded.text-center.mb-3');
+            chartContainer.innerHTML = `
+                <div class="alert alert-warning" role="alert">
+                    Impossibile caricare i dati del grafico. ${error.message}
+                </div>
+            `;
+        });
+}
+function createWeatherCharts(data) {
+    // Ensure Chart.js is loaded
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js is not loaded');
+        return;
+    }
+
+    // Validate and transform data
+    const processedData = data.map(entry => {
+        // Check if entry has valid data
+        if (entry.temperature === undefined || 
+            entry.timestamp === undefined || 
+            entry.barometer === undefined || 
+            entry.outside_humidity === undefined) {
+            console.warn("Invalid data entry:", entry);
+            return null;
+        }
+
+        // Try parsing the timestamp
+        let parsedDate;
+        try {
+            parsedDate = new Date(entry.timestamp);
+            
+            // Fallback if Date parsing fails
+            if (isNaN(parsedDate.getTime())) {
+                console.warn("Invalid timestamp:", entry.timestamp);
+                return null;
+            }
+        } catch (error) {
+            console.warn("Date parsing error:", error);
+            return null;
+        }
+
+        return {
+            temperature: parseFloat(entry.temperature),
+            barometer: parseFloat(entry.barometer),
+            humidity: parseFloat(entry.outside_humidity),
+            timestamp: parsedDate
+        };
+    }).filter(entry => entry !== null);  // Remove invalid entries
+
+    // Check if we have any valid data
+    if (processedData.length === 0) {
+        document.getElementById('charts-container').innerHTML = 'Nessun dato valido disponibile';
+        return;
+    }
+
+    // Sort data by timestamp to ensure chronological order
+    processedData.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Prepare labels and data for each metric
+    const labels = processedData.map(entry => 
+        entry.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+    );
+
+    // Create charts for each weather metric
+    const chartConfigs = [
+        {
+            id: 'temperature-chart',
+            label: 'Temperatura (°C)',
+            data: processedData.map(entry => entry.temperature),
+            color: 'rgb(75, 192, 192)',
+            title: 'Temperature nelle ultime 24 ore',
+            yAxis: {
+                min: -10,
+                max: 40,
+                stepSize: 5
+            }
+        },
+        {
+            id: 'pressure-chart',
+            label: 'Pressione (hPa)',
+            data: processedData.map(entry => entry.barometer),
+            color: 'rgb(255, 99, 132)',
+            title: 'Pressione atmosferica nelle ultime 24 ore',
+            yAxis: {
+                min: 900,
+                max: 1100,
+                stepSize: 20
+            }
+        },
+        {
+            id: 'humidity-chart',
+            label: 'Umidità (%)',
+            data: processedData.map(entry => entry.humidity),
+            color: 'rgb(54, 162, 235)',
+            title: 'Umidità nelle ultime 24 ore',
+            yAxis: {
+                min: 0,
+                max: 100,
+                stepSize: 10
+            }
+        }
+    ];
+
+    // Create charts
+    chartConfigs.forEach(config => {
+        const ctx = document.getElementById(config.id);
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: config.label,
+                    data: config.data,
+                    borderColor: config.color,
+                    backgroundColor: config.color.replace('rgb', 'rgba').replace(')', ', 0.2)'),
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: config.title
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        min: config.yAxis.min,
+                        max: config.yAxis.max,
+                        ticks: {
+                            stepSize: config.yAxis.stepSize
+                        },
+                        title: {
+                            display: true,
+                            text: config.label
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Ora'
+                        }
+                    }
+                }
+            }
+        });
+    });
+}
+// Modify the HTML to add canvases for the charts and update button functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Replace the placeholder image with chart canvases
+    const chartsContainer = document.querySelector('.bg-light.p-3.rounded.text-center.mb-3');
+    chartsContainer.innerHTML = `
+        <div id="charts-container">
+            <canvas id="temperature-chart" class="img-fluid rounded mb-3"></canvas>
+            <canvas id="pressure-chart" class="img-fluid rounded mb-3"></canvas>
+            <canvas id="humidity-chart" class="img-fluid rounded"></canvas>
+        </div>
+    `;
+    
+    // Update button functionality
+    const buttons = document.querySelectorAll('.btn-group .btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            buttons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Show corresponding chart
+            const chartContainer = document.getElementById('charts-container');
+            const charts = chartContainer.querySelectorAll('canvas');
+            charts.forEach(chart => chart.style.display = 'none');
+            
+            switch(this.textContent.trim()) {
+                case 'Temperatura':
+                    document.getElementById('temperature-chart').style.display = 'block';
+                    break;
+                case 'Umidità':
+                    document.getElementById('humidity-chart').style.display = 'block';
+                    break;
+                case 'Pressione':
+                    document.getElementById('pressure-chart').style.display = 'block';
+                    break;
+                default:
+                    charts.forEach(chart => chart.style.display = 'block');
+            }
+        });
+    });
+    
+    // Fetch weather data when the page loads
+    fetchWeatherData();
+});
+    </script>
+</body>
+</html>

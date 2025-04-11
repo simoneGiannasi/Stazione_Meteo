@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archivio Dati - Stazione Meteo ITIS Mario Delpozzo</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .weather-icon {
+            font-size: 3.5rem;
+        }
+        .temp-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .custom-card {
+            transition: transform 0.3s;
+        }
+        .custom-card:hover {
+            transform: translateY(-5px);
+        }
+        .bg-school {
+            background-color: #0d6efd;
+        }
+        .archive-year {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-school">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="./">
+                <i class="fas fa-cloud-sun me-2"></i>
+                <span>Stazione Meteo ITIS Mario Delpozzo</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="./">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="./archivio-dati">Archivio Dati</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href = "./dati_live">Dati Live</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./progetto">Il Progetto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.itiscuneo.edu.it/">La Scuola</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="bg-light py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">Archivio Dati Meteorologici</h1>
+                    <p class="lead mb-0">Consultazione dello storico dei dati raccolti dalla nostra stazione</p>
+                    <p>Dati disponibili dal 2025 ad oggi</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="d-flex flex-column align-items-md-end">
+                        <div class="mb-1">Aggiornato: <span id="current-date" class="fw-bold">25 Febbraio 2025, 10:30</span></div>
+                        <div>
+                            <span class="badge bg-success">Dati verificati</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Tabella dati -->
+    <div class="container my-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0"><i class="fas fa-table me-2"></i>Tabella dati</h2>
+                    <!--ù
+                    <div>
+                        <button class="btn btn-sm btn-light" title="Esporta CSV">
+                            <i class="fas fa-file-csv"></i>
+                        </button>
+                        <button class="btn btn-sm btn-light ms-1" title="Esporta Excel">
+                            <i class="fas fa-file-excel"></i>
+                        </button>
+                        <button class="btn btn-sm btn-light ms-1" title="Stampa tabella">
+                            <i class="fas fa-print"></i>
+                        </button>
+                    </div>
+                    -->
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Temperatura media</th>
+                                <th>Temperatura min</th>
+                                <th>Temperatura max</th>
+                                <th>Velocità vento max</th>
+                                <th>Precipitazioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dato in tabella_dati %}
+                            <tr>
+                                <td>{{ dato.data_formattata }}</td>
+                                <td>{{ dato.temp_media_formattata }}</td>
+                                <td>{{ dato.temp_minima_formattata }}</td>
+                                <td>{{ dato.temp_massima_formattata }}</td>
+                                <td>{{ dato.raffica_formattata }}</td>
+                                <td>{{ dato.precipitazioni_formattate }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% if not tabella_dati %}
+                            <tr>
+                                <td colspan="6" class="text-center">Non ci sono dati disponibili al momento.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Precedente</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Successiva</a>
+                        </li>
+                    </ul>
+                </nav> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Archivio anni -->
+    <!-- 
+    <div class="container my-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h5 mb-0"><i class="fas fa-archive me-2"></i>Archivio storico per anno</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="list-group mb-3">
+                            <a href="#" class="list-group-item list-group-item-action active d-flex justify-content-between align-items-center">
+                                2025
+                                <span class="badge bg-primary rounded-pill">Dati parziali</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                2024
+                                <span class="badge bg-success rounded-pill">Dati completi</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                2023
+                                <span class="badge bg-success rounded-pill">Dati completi</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                2022
+                                <span class="badge bg-warning rounded-pill">Dati parziali</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">Temperatura media mensile - 2024</h5>
+                                <div class="text-center mb-3">
+                                    <img src="/api/placeholder/500/200" alt="Grafico temperature mensili 2024" class="img-fluid rounded">
+                                </div>
+                                <div class="row row-cols-3 g-2">
+                                    <div class="col">
+                                        <a href="#" class="btn btn-outline-primary w-100 btn-sm">Report Annuale</a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="#" class="btn btn-outline-primary w-100 btn-sm">Anomalie</a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="#" class="btn btn-outline-primary w-100 btn-sm">Eventi Estremi</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    -->
+    <!-- Download e API 
+    <div class="container my-4">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h5 mb-0"><i class="fas fa-download me-2"></i>Download Dataset Completi</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Scarica i dataset completi per analisi avanzate e ricerche. I nostri dati sono disponibili in diversi formati e con differenti livelli di aggregazione.</p>
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-file-csv me-2"></i> Dataset annuale 2024 (CSV)
+                                </div>
+                                <span class="badge bg-secondary rounded-pill">7.8 MB</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-file-excel me-2"></i> Dataset annuale 2024 (Excel)
+                                </div>
+                                <span class="badge bg-secondary rounded-pill">8.2 MB</span>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-file-csv me-2"></i> Dataset annuale 2023 (CSV)
+                                </div>
+                                <span class="badge bg-secondary rounded-pill">7.6 MB</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-outline-primary">Vedi tutti i download disponibili</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h5 mb-0"><i class="fas fa-code me-2"></i>API per Sviluppatori</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Accedi ai nostri dati meteorologici tramite API RESTful. Ideale per integrare i dati nei tuoi progetti o applicazioni.</p>
+                        <div class="bg-light p-3 rounded mb-3">
+                            <code>GET https://api.stazionemeteo.itisdelpozzo.edu.it/data/temperature/daily?from=2025-01-01&to=2025-02-25</code>
+                        </div>
+                        <p>L'accesso all'API è gratuito per usi educativi e di ricerca. Registrati per ottenere la tua API key.</p>
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-outline-primary">Documentazione API</a>
+                            <a href="#" class="btn btn-outline-primary">Registrati per API key</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+-->
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>ITIS Mario Delpozzo - Stazione Meteo</h5>
+                    <address>
+                        <i class="fas fa-map-marker-alt me-2"></i> Corso Alcide De Gasperi, 30 - 12100 Cuneo<br>
+                        <i class="fas fa-phone me-2"></i> Tel: 0171 000000<br>
+                        <i class="fas fa-envelope me-2"></i> Email: stazionemeteo@itisdelpozzo.edu.it
+                    </address>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Collegamenti Rapidi</h5>
+                    <ul class="list-inline">
+                        <li class="list-inline-item"><a href="./" class="text-white">Home</a></li>
+                        <li class="list-inline-item"><a href="./archivio-dati" class="text-white">Archivio Dati</a></li>
+                        <li class="list-inline-item"><a href="./dati_live" class="text-white">Dati-Live</a></li>
+                        <li class="list-inline-item"><a href="./progetto" class="text-white">Il Progetto</a></li>
+                        <li class="list-inline-item"><a href="https://www.itiscuneo.edu.it/" class="text-white">La Scuola</a></li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="https://www.facebook.com/ITISdelpozzo/" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@itisdelpozzocuneo3140" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="text-center">
+                <small>© 2025 ITIS Mario Delpozzo - Stazione Meteo di Cuneo. Sviluppato dagli studenti dell'indirizzo Robotica.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Imposta la data corrente
+        document.addEventListener('DOMContentLoaded', function() {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const date = new Date();
+            document.getElementById('current-date').textContent = date.toLocaleDateString('it-IT', options);
+        });
+    </script>
+</body>
+</html>
